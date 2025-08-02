@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "configurations": [
+        {
+            "name": "ksp_1_clr",
+            "type": "clr",
+            "request": "launch",
+            "preLaunchTask": "ksp_1",
+            "program": "C:/Users/L/Desktop/ksp_1.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "externalTerminal",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "name": "ksp_1_coreclr",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/ksp_1/bin/Debug/net9.0/ksp_1.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "externalTerminal",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+    ]
+}
