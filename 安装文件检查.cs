@@ -8,7 +8,7 @@ using UnityEngine;
 namespace meanran_xuexi_mods
 {
     [KSPAddon(KSPAddon.Startup.Instantly, true)]
-    internal class Startup : MonoBehaviour
+    public class Startup : MonoBehaviour
     {
         private void Start()
         {
@@ -32,60 +32,67 @@ namespace meanran_xuexi_mods
     }
 
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
-    internal class InstallChecker : MonoBehaviour
+    public class InstallChecker : MonoBehaviour
     {
-        internal const string 模组名称 = "轨道相位调整计算器";
-        internal const string 模组目录名称 = "GuiDao";
-        internal const string DLL路径 = 模组目录名称 + "/Plugins";
-        public static StreamWriter m_日志写入 = null;
-        public static StreamWriter 日志写入
+        public const string 模组名称_w = "轨道相位调整计算器";
+        public const string 模组目录名称_w = "GuiDao";
+        public const string DLL路径_w = 模组目录名称_w + "/Plugins";
+        public static StreamWriter 日志写入_z = null;
+        public static StreamWriter 日志写入_h
         {
             get
             {
-                if (m_日志写入 == null)
+                if (日志写入_z == null)
                 {
-                    var 日志路径 = Path.Combine(Path.GetFullPath(KSPUtil.ApplicationRootPath), "GameData/GuiDao/Log/Log.txt").Replace('/', Path.DirectorySeparatorChar);
+                    var 日志路径 = Path.Combine(Path.GetFullPath(KSPUtil.ApplicationRootPath), "GameData/GuiDao/Log/log.txt").Replace('/', Path.DirectorySeparatorChar);
                     Directory.CreateDirectory(Path.GetDirectoryName(日志路径));
-                    m_日志写入 = new StreamWriter(日志路径, append: false) { AutoFlush = true };
+                    日志写入_z = new StreamWriter(日志路径, append: false);
+                    日志写入_z.AutoFlush = true;
                 }
 
-                return m_日志写入;
+                return 日志写入_z;
             }
         }
         protected void Start()
         {
             // a.url：只显示GameData目录中的相对路径  // a.path：包括盘符的完整路径
             // 搜索此模组的 DLL 文件是否存在于错误的位置。这也将检测到重复的副本，因为只有一个可以位于正确的位置。
-            var 错误加载表 = AssemblyLoader.loadedAssemblies.Where(a => a.assembly.GetName().Name == Assembly.GetExecutingAssembly().GetName().Name).Where(a => a.url != DLL路径);
+            var 错误加载表 = AssemblyLoader.loadedAssemblies.Where(a => a.assembly.GetName().Name == Assembly.GetExecutingAssembly().GetName().Name).Where(a => a.url != DLL路径_w);
             if (错误加载表.Any())
             {
                 // 将完整路径转换成Uri格式, 并去除坎巴拉根目录，只保留相对路径
                 var 路径表 = 错误加载表.Select(a => a.path).Select(p => Uri.UnescapeDataString(new Uri(Path.GetFullPath(KSPUtil.ApplicationRootPath)).MakeRelativeUri(new Uri(p)).ToString().Replace('/', Path.DirectorySeparatorChar)));
-                var 日志内容 = $"<{模组名称}>安装了错误的版本, 所有DLL文件应位于 KSP/GameData/{DLL路径} 目录下, 请勿移动该文件夹内的任何文件\n\n" + "请移除以下错误文件：\n" + String.Join("\n", 路径表.ToArray());
-                弹出报警日志面板(日志内容);
+                var 日志内容 = $"<{模组名称_w}>安装了错误的版本, 所有DLL文件应位于 KSP/GameData/{DLL路径_w} 目录下, 请勿移动该文件夹内的任何文件\n\n" + "请移除以下错误文件：\n" + String.Join("\n", 路径表.ToArray());
+                弹出日志面板(日志内容);
             }
         }
 
         // 调用者相关实参由编译器在编译时自动生成,无需手动传入
-        public static string 弹出报警日志面板(string 日志内容,
-                   [CallerMemberName] string 调用者方法名 = "",
-                   [CallerFilePath] string 调用者源文件路径 = "",
-                   [CallerLineNumber] int 调用者源文件行号 = 0)
+        public static string 弹出日志面板(string 日志内容_c, string 标题_c = "日志")
         {
             PopupDialog.SpawnPopupDialog
       (
           new Vector2(0.5f, 0.5f),
           new Vector2(0.5f, 0.5f),
-          "报警日志",
-          "报警日志",
-          日志内容,
+          标题_c,
+          标题_c,
+          日志内容_c,
           "OK",
           false,
           HighLogic.UISkin
       );
-            var 日志格式化 = $"#{DateTime.Now.ToString("HH:mm:ss.fff")}\n日志内容: {日志内容}\n调用者方法名: {调用者方法名}\n调用者源文件路径: {调用者源文件路径}\n调用者源文件行号: {调用者源文件行号}\n";
-            日志写入.WriteLine(日志格式化);
-            return 日志格式化;
+            return 日志内容_c;
+        }
+
+        // 调用者相关实参由编译器在编译时自动生成,无需手动传入
+        public static string 写入本地日志(string 日志内容_c,
+                   [CallerMemberName] string 调用者方法名_c = "",
+                   [CallerFilePath] string 调用者源文件路径_c = "",
+                   [CallerLineNumber] int 调用者源文件行号_c = 0)
+        {
+            日志内容_c = $"#{DateTime.Now.ToString("HH:mm:ss.fff")}\n日志内容:\n{日志内容_c}\n调用者方法名: {调用者方法名_c}\n调用者源文件路径: {调用者源文件路径_c}\n调用者源文件行号: {调用者源文件行号_c}\n";
+            日志写入_h.WriteLine(日志内容_c);
+            return 日志内容_c;
         }
     }
 }
@@ -95,37 +102,6 @@ namespace meanran_xuexi_mods
 // GameEvents.onShowUI.Add(this.ShowUI);
 // GameEvents.onGamePause.Add(this.HideUIWhenPaused);
 // GameEvents.onGameUnpause.Add(this.ShowUIwhenUnpaused);
-
-// 在近心点处创建圆轨机动节点
-// {
-//     double UT = Planetarium.GetUniversalTime();
-//     UT += FlightGlobals.ActiveVessel.orbit.timeToPe;
-//     var o = FlightGlobals.ActiveVessel.orbit;
-//     Vector3d circularizeDv = VesselOrbitalCalc.CircularizeAtPE(FlightGlobals.ActiveVessel);
-//     // 如果翻转, 则减去
-//     if (flipOrbit)
-//         circularizeDv -= OrbitCalc.dBurnDV * o.Horizontal(UT);
-//     else
-//         circularizeDv += OrbitCalc.dBurnDV * o.Horizontal(UT);
-//     FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Clear();
-//     VesselOrbitalCalc.PlaceManeuverNode(FlightGlobals.ActiveVessel, FlightGlobals.ActiveVessel.orbit, circularizeDv, UT);
-// }
-
-// 在远心点处创建圆轨机动节点
-// Vector3d circularizeDv = VesselOrbitalCalc.CircularizeAtAP(FlightGlobals.ActiveVessel);
-// double UT = Planetarium.GetUniversalTime();
-// UT += FlightGlobals.ActiveVessel.orbit.timeToAp;
-// var o = FlightGlobals.ActiveVessel.orbit;
-// // 如果翻转, 则减去
-// if (flipOrbit)
-//     circularizeDv -= OrbitCalc.dBurnDV * o.Horizontal(UT);
-// else
-//     circularizeDv += OrbitCalc.dBurnDV * o.Horizontal(UT);
-// FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Clear();
-// VesselOrbitalCalc.PlaceManeuverNode(FlightGlobals.ActiveVessel, FlightGlobals.ActiveVessel.orbit, circularizeDv, UT);
-
-
-
 
 // 删除机动节点
 // FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Clear(); // 清除所有机动节点
@@ -184,3 +160,11 @@ namespace meanran_xuexi_mods
 //     conf.SetValue("y", y.ToString());
 //     conf.save();
 // }
+
+
+// GUILayout.Label($"测试 - 远点速度: {当前轨道.ApV质心远点速度}");
+// GUILayout.Label($"测试 - 近点速度: {当前轨道.PeV质心近点速度}");
+// GUILayout.Label($"测试 - 偏心率: {当前轨道.e偏心率}  ,  {当前轨道.e偏心率_旧}");
+// GUILayout.Label($"测试 - 半短轴: {当前轨道.半短轴}");
+// GUILayout.Label($"测试 - 万有引力常数g: {中心天体.天体.gravParameter / 中心天体.天体.Mass}");
+// GUILayout.Label($"测试 - 天体引力常数μ: {中心天体.天体.gravParameter}  ,  {中心天体.μ}");
