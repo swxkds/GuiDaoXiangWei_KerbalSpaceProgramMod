@@ -95,6 +95,7 @@ namespace meanran_xuexi_mods
         {
             var 像素数组 = new Color[样式_c.宽 * 样式_c.高];        // 临时变量会自动释放内存
 
+            // 贴图的构造函数是Unity引擎封装的, 会自动将贴图资源添加到Unity引擎资源管理器
             Texture2D 正常贴图 = null;
             Texture2D 悬停贴图 = null;
             Texture2D 按下贴图 = null;
@@ -108,6 +109,7 @@ namespace meanran_xuexi_mods
                 像素数组.初始化像素数组(样式_c.宽, 样式_c.高, 样式_c.边框宽度, 样式_c.主体颜色, 样式_c.正常边框颜色);
                 正常贴图.SetPixels(像素数组);
                 正常贴图.Apply();
+                正常贴图.hideFlags = HideFlags.DontSave; // 默认情况下贴图资源在切换场景时会被Unity引擎释放
             }
 
             if (样式_c.悬停边框颜色 != Color.clear)
@@ -117,6 +119,7 @@ namespace meanran_xuexi_mods
                 像素数组.初始化像素数组(样式_c.宽, 样式_c.高, 样式_c.边框宽度, 样式_c.主体颜色, 样式_c.悬停边框颜色);
                 悬停贴图.SetPixels(像素数组);
                 悬停贴图.Apply();
+                悬停贴图.hideFlags = HideFlags.DontSave; // 默认情况下贴图资源在切换场景时会被Unity引擎释放
             }
 
             if (样式_c.按下边框颜色 != Color.clear)
@@ -125,6 +128,7 @@ namespace meanran_xuexi_mods
                 像素数组.初始化像素数组(样式_c.宽, 样式_c.高, 样式_c.边框宽度, 样式_c.主体颜色, 样式_c.按下边框颜色);
                 按下贴图.SetPixels(像素数组);
                 按下贴图.Apply();
+                按下贴图.hideFlags = HideFlags.DontSave; // 默认情况下贴图资源在切换场景时会被Unity引擎释放
             }
 
             if (样式_c.键盘焦点边框颜色 != Color.clear)
@@ -133,6 +137,7 @@ namespace meanran_xuexi_mods
                 像素数组.初始化像素数组(样式_c.宽, 样式_c.高, 样式_c.边框宽度, 样式_c.主体颜色, 样式_c.键盘焦点边框颜色);
                 键盘焦点贴图.SetPixels(像素数组);
                 键盘焦点贴图.Apply();
+                键盘焦点贴图.hideFlags = HideFlags.DontSave; // 默认情况下贴图资源在切换场景时会被Unity引擎释放
             }
 
             if (模板_c == null) { 样式实例 = new GUIStyle(); }                // 引用被上级调用者持有, 不需要释放内存
